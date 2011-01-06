@@ -13,22 +13,22 @@
 /****************************************************************************/
 /* Input a byte from given I/O port                                         */
 /****************************************************************************/
-byte Z80_In (word Port);
+byte Z80_In (void *userdata, word Port);
 
 /****************************************************************************/
 /* Output a byte to given I/O port                                          */
 /****************************************************************************/
-void Z80_Out (word Port,byte Value);
+void Z80_Out (void *userdata, word Port,byte Value);
 
 /****************************************************************************/
 /* Read a byte from given memory location                                   */
 /****************************************************************************/
-unsigned Z80_RDMEM(dword A);
+unsigned Z80_RDMEM(void *userdata, dword A);
 
 /****************************************************************************/
 /* Write a byte to given memory location                                    */
 /****************************************************************************/
-void Z80_WRMEM(dword A,byte V);
+void Z80_WRMEM(void *userdata, dword A,byte V);
 
 /****************************************************************************/
 /* Just to show you can actually use macros as well                         */
@@ -45,7 +45,7 @@ void Z80_WRMEM(dword A,byte V);
 /* opcodes. In case of system with memory mapped I/O, this function can be  */
 /* used to greatly speed up emulation                                       */
 /****************************************************************************/
-#define Z80_RDOP(A)		Z80_RDMEM(A)
+#define Z80_RDOP(A)		Z80_RDMEM(R.userdata, A)
 
 /****************************************************************************/
 /* Z80_RDOP_ARG() is identical to Z80_RDOP() except it is used for reading  */
@@ -59,12 +59,12 @@ void Z80_WRMEM(dword A,byte V);
 /* stack variables. In case of system with memory mapped I/O, this function */
 /* can be used to slightly speed up emulation                               */
 /****************************************************************************/
-#define Z80_RDSTACK(A)		Z80_RDMEM(A)
+#define Z80_RDSTACK(A)		Z80_RDMEM(R.userdata, A)
 
 /****************************************************************************/
 /* Z80_WRSTACK() is identical to Z80_WRMEM() except it is used for writing  */
 /* stack variables. In case of system with memory mapped I/O, this function */
 /* can be used to slightly speed up emulation                               */
 /****************************************************************************/
-#define Z80_WRSTACK(A,V)	Z80_WRMEM(A,V)
+#define Z80_WRSTACK(A,V)	Z80_WRMEM(R.userdata, A,V)
 

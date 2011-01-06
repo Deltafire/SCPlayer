@@ -100,6 +100,7 @@ typedef struct
   pair AF,BC,DE,HL,IX,IY,PC,SP;
   pair AF2,BC2,DE2,HL2;
   unsigned IFF1,IFF2,HALT,IM,I,R,R2;
+  void *userdata;
 } Z80_Regs;
 
 /****************************************************************************/

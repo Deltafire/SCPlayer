@@ -1,11 +1,6 @@
 #ifndef SCPLAYER_H
 #define SCPLAYER_H
 
-#include "SAASound.h"
-extern "C" {
-#include "Z80.h"
-}
-
 class SCPlayer
 {
  public:
@@ -16,11 +11,9 @@ class SCPlayer
   bool init(const int mixerFreq);
   void generate(unsigned char *buffer, const int length);
 
+  class SCPlayer_impl;
  private:
-  byte _ram[0x8000];
-  bool _eTracker;
-  int _period;
-  LPCSAASOUND _saa;
+  SCPlayer_impl* _impl;
 };
 
 #endif

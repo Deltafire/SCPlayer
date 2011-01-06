@@ -15,15 +15,15 @@
 
 #include "Z80.h"
 
-#define M_RDMEM(A)      Z80_RDMEM(A)
-#define M_WRMEM(A,V)    Z80_WRMEM(A,V)
+#define M_RDMEM(A)      Z80_RDMEM(R.userdata, A)
+#define M_WRMEM(A,V)    Z80_WRMEM(R.userdata, A,V)
 #define M_RDOP(A)       Z80_RDOP(A)
 #define M_RDOP_ARG(A)   Z80_RDOP_ARG(A)
 #define M_RDSTACK(A)    Z80_RDSTACK(A)
 #define M_WRSTACK(A,V)  Z80_WRSTACK(A,V)
 
-#define DoIn(lo,hi)     Z80_In((lo)+(((unsigned)(hi))<<8))
-#define DoOut(lo,hi,v)  Z80_Out((lo)+(((unsigned)(hi))<<8),v)
+#define DoIn(lo,hi)     Z80_In(R.userdata, (lo)+(((unsigned)(hi))<<8))
+#define DoOut(lo,hi,v)  Z80_Out(R.userdata, (lo)+(((unsigned)(hi))<<8),v)
 
 static void Interrupt(int j);
 static void ei(void);
