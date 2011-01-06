@@ -1,0 +1,1 @@
+SUBDIRS = scplayerlib scplay
