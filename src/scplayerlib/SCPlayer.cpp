@@ -12,7 +12,7 @@
 
 static byte *ram;
 static LPCSAASOUND saa;
-const int stub = 0xf000;
+const int stub = 0x7000;
 
 int Z80_IRQ = 0;
 
@@ -31,17 +31,17 @@ void Z80_Retn() { return; }
 
 unsigned Z80_RDMEM (dword addr)                                                                                  
 {                                                                                                                      
-  if(addr < 0x8000) debug_print("readRAM [" << addr << "] = " << (int)ram[addr]);
+  if(addr < 0x7000) debug_print("readRAM [" << addr << "] = " << (int)ram[addr]);
   //debug_print("readRAM [" << addr << "] = " << (int)ram[addr]);
-  return ram[addr];
+  return ram[addr % 0x8000];
 }                                                                                                                      
                                                                                                                        
                                                                                                                        
 void Z80_WRMEM (dword addr, byte val)                                                                       
 {                                                                                                                      
 //  if (addr > 0x9000) debug_print("RAM [" << addr << "] = " << (int)val);
-  ram[addr] = val;                                                                                               
-}  
+  ram[addr % 0x8000] = val;
+}
 
 
 byte Z80_In (word port)
@@ -85,7 +85,7 @@ bool SCPlayer::load(const char* filename)
   fread(buf, 1, 8, f);
   if (!strncmp(buf, "ETracker", 8)) {
     debug_print("ETracker data file detected");
-    memcpy(&_ram[0x8000], etracker_bin, 1203);
+    memcpy(_ram, etracker_bin, 1203);
     _eTracker = true;
   }
   else
@@ -93,19 +93,19 @@ bool SCPlayer::load(const char* filename)
     _eTracker = false;
   }
   rewind(f);
-  fread(_ram+(_eTracker ? 0x84b3 :0x8000), 1, 0x7000, f);
+  fread(_ram+(_eTracker ? 0x04b3 :0x0000), 1, 0x7000, f);
   fclose(f);
-  if (!strncmp((char *)(&_ram[0x8013]), "\1\xff\1\x3e\x1c\xed", 6))
+  if (!strncmp((char *)(&_ram[0x0013]), "\1\xff\1\x3e\x1c\xed", 6))
   {
     debug_print("Patch #1");
-    _ram[0x8001] = 1;
-    _ram[0x8002] = 0;
+    _ram[0x0001] = 1;
+    _ram[0x0002] = 0;
   }
-  else if (!strncmp((char *)&_ram[0x8000], "\x43\x72\x3d\xc2\x23\x81", 6))
+  else if (!strncmp((char *)&_ram[0x0000], "\x43\x72\x3d\xc2\x23\x81", 6))
   {
-    _ram[0x8001] = 1;
+    _ram[0x0001] = 1;
   }
-  else if (!strncmp((char*)&_ram[0x8000], "\x21\xb3\x84\xc3\xef\x83", 6))
+  else if (!strncmp((char*)&_ram[0x0000], "\x21\xb3\x84\xc3\xef\x83", 6))
   {
     // eTracker compiled song
     _eTracker = true;

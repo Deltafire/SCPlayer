@@ -17,7 +17,7 @@ class SCPlayer
   void generate(unsigned char *buffer, const int length);
 
  private:
-  byte _ram[0xffff];
+  byte _ram[0x8000];
   bool _eTracker;
   int _period;
   LPCSAASOUND _saa;
