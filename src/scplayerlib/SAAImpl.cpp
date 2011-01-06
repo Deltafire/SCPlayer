@@ -527,8 +527,8 @@ void CSAASoundInternal::GenerateMany(BYTE * pBuffer, unsigned long nSamples)
 			// force output into the range 0<=x<=65535
 			// (strictly, the following gives us 0<=x<=63360)
 			mono *= 5;
-			*pBuffer++ = mono & 0x00ff;
-			*pBuffer++ = mono >> 8;
+			*reinterpret_cast<short *> (pBuffer++) = mono;
+			pBuffer++;
 		}
 		break;
 	
@@ -572,10 +572,10 @@ void CSAASoundInternal::GenerateMany(BYTE * pBuffer, unsigned long nSamples)
 			// (strictly, the following gives us 0<=x<=63360)
 			stereoval.sep.Left *= 10;
 			stereoval.sep.Right *= 10;
-			*pBuffer++ = stereoval.sep.Left & 0x00ff;
-			*pBuffer++ = stereoval.sep.Left >> 8;
-			*pBuffer++ = stereoval.sep.Right & 0x00ff;
-			*pBuffer++ = stereoval.sep.Right >> 8;
+			*reinterpret_cast<short *> (pBuffer++) = stereoval.sep.Left;
+			pBuffer++;
+			*reinterpret_cast<short *> (pBuffer++) = stereoval.sep.Right;
+			pBuffer++;
 		}
 		break;
 	
@@ -617,8 +617,8 @@ void CSAASoundInternal::GenerateMany(BYTE * pBuffer, unsigned long nSamples)
 			// force output into the range 0<=x<=65535
 			// (strictly, the following gives us 0<=x<=63360)
 			mono *= 5;
-			*pBuffer++ = mono & 0x00ff;
-			*pBuffer++ = mono >> 8;
+			*reinterpret_cast<short *> (pBuffer++) = mono;
+			pBuffer++;
 		}
 		break;
 	
@@ -662,10 +662,10 @@ void CSAASoundInternal::GenerateMany(BYTE * pBuffer, unsigned long nSamples)
 			// (strictly, the following gives us 0<=x<=63360)
 			stereoval.sep.Left *= 10;
 			stereoval.sep.Right *= 10;
-			*pBuffer++ = stereoval.sep.Left & 0x00ff;
-			*pBuffer++ = stereoval.sep.Left >> 8;
-			*pBuffer++ = stereoval.sep.Right & 0x00ff;
-			*pBuffer++ = stereoval.sep.Right >> 8;
+			*reinterpret_cast<short *> (pBuffer++) = stereoval.sep.Left;
+			pBuffer++;
+			*reinterpret_cast<short *> (pBuffer++) = stereoval.sep.Right;
+			pBuffer++;
 		}
 		break;
 	
