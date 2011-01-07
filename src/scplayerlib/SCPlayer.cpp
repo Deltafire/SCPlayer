@@ -14,7 +14,8 @@ extern "C" {
 #define debug_print(s) // debug_print
 #endif
 
-const int stub = 0x7000;
+const int stub      = 0x7000;
+const int Z80Cycles = 6000000/50; // Max cycles to allow z80 code to execute per tick
 
 
 // Implementation class
@@ -24,13 +25,14 @@ class SCPlayer::SCPlayer_impl
   bool _eTracker;
   int _period;
   LPCSAASOUND _saa;
+  Z80 _z80;
  public:
   SCPlayer_impl() {}
   bool load(const char* filename);
   bool init(const int mixerFreq);
   void generate(unsigned char *buffer, const int length);
-  void setRam(dword addr, byte val);
-  byte getRam(dword addr);
+  void setRam(word addr, byte val);
+  byte getRam(word addr);
   void saaWriteAddress(byte val);
   void saaWriteData(byte val);
 
@@ -47,22 +49,22 @@ void SCPlayer::generate(unsigned char *buffer, const int length)
 // Functions called by Z80 emulator (callbacks)
 
 // We use the patch instruction to stop the emulator
-void Z80_Patch (Z80_Regs *regs)
+void PatchZ80 (Z80 *regs)
 {
-  regs->PC.D = stub; // Reset PC
-  Z80_Running = 0;
+  regs->PC.W = stub; // Reset PC
+  regs->ICount = 0;
 }
 int Z80_Interrupt() { return 0; }
 void Z80_Reti() { return; }
 void Z80_Retn() { return; }
-unsigned Z80_RDMEM (void *userdata, dword addr)
+byte Z80_RDMEM (void *userdata, word addr)
 {
   SCPlayer::SCPlayer_impl *scp = reinterpret_cast<SCPlayer::SCPlayer_impl *> (userdata);
   if(addr < 0x7000) debug_print("readRAM [" << addr << "] = " << (int)scp->getRam(addr));
   //debug_print("readRAM [" << addr << "] = " << (int)ram[addr]);
   return scp->getRam(addr);
 }
-void Z80_WRMEM (void *userdata, dword addr, byte val)
+void Z80_WRMEM (void *userdata, word addr, byte val)
 {
   SCPlayer::SCPlayer_impl *scp = reinterpret_cast<SCPlayer::SCPlayer_impl *> (userdata);
 //  if (addr > 0x9000) debug_print("RAM [" << addr << "] = " << (int)val);
@@ -149,19 +151,16 @@ bool SCPlayer::SCPlayer_impl::init(const int mixerFreq)
 
   // Initialise CPU
   debug_print("Initialising Z80 CPU.");
-  Z80_Reset();
-  Z80_Regs r;
-  Z80_GetRegs(&r);
-  r.userdata = reinterpret_cast<void *> (this);
-  r.PC.D = stub;
-  Z80_SetRegs(&r);
+  ResetZ80(&_z80);
+  _z80.User = reinterpret_cast<void *> (this);
+  _z80.PC.W = stub;
   _ram[stub] = 0xcd; // CALL
   _ram[stub+1] = 0; _ram[stub+2] = 0x80;
   _ram[stub+3] = 0xed; _ram[stub+4] = 0xfe; // Patch
   if(_eTracker == true)
   {
     debug_print("Initialising eTracker player.");
-    Z80();
+    ExecZ80(&_z80, Z80Cycles);
     _ram[stub+1] = 6;
   }
 
@@ -188,7 +187,7 @@ void SCPlayer::SCPlayer_impl::generate(unsigned char *buffer, const int length)
 
   while(samplesToPlay >= _period)
   {
-    Z80();
+    ExecZ80(&_z80, Z80Cycles);
     _saa->GenerateMany(buffer, _period);
     buffer += _period * 4;
     samplesToPlay -= _period;
@@ -196,20 +195,20 @@ void SCPlayer::SCPlayer_impl::generate(unsigned char *buffer, const int length)
 
   if (samplesToPlay)
   {
-    Z80();
+    ExecZ80(&_z80, Z80Cycles);
     _saa->GenerateMany(buffer, samplesToPlay);
     remainder = _period - samplesToPlay;
   }
 }
 
 
-void SCPlayer::SCPlayer_impl::setRam(dword addr, byte val)
+void SCPlayer::SCPlayer_impl::setRam(word addr, byte val)
 {
   _ram[addr & 0x7fff] = val;
 }
 
 
-byte SCPlayer::SCPlayer_impl::getRam(dword addr)
+byte SCPlayer::SCPlayer_impl::getRam(word addr)
 {
   return _ram[addr & 0x7fff];
 }

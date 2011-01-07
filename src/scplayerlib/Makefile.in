@@ -49,9 +49,17 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libscplayer_la_LIBADD =
-am_libscplayer_la_OBJECTS = SCPlayer.lo Z80.lo SAAAmp.lo SAAEnv.lo \
-	SAAFreq.lo SAAImpl.lo SAANoise.lo SAASndC.lo SAASound.lo
+am_libscplayer_la_OBJECTS = libscplayer_la-SCPlayer.lo \
+	libscplayer_la-ConDebug.lo libscplayer_la-Debug.lo \
+	libscplayer_la-Z80.lo libscplayer_la-SAAAmp.lo \
+	libscplayer_la-SAAEnv.lo libscplayer_la-SAAFreq.lo \
+	libscplayer_la-SAAImpl.lo libscplayer_la-SAANoise.lo \
+	libscplayer_la-SAASndC.lo libscplayer_la-SAASound.lo
 libscplayer_la_OBJECTS = $(am_libscplayer_la_OBJECTS)
+libscplayer_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(libscplayer_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -205,11 +213,17 @@ top_srcdir = @top_srcdir@
 # Process this file with automake to generate a Makefile
 #
 noinst_LTLIBRARIES = libscplayer.la
+libscplayer_la_CFLAGS = -I${srcdir}/Z80
+libscplayer_la_CXXFLAGS = -I${srcdir}/Z80 -I${srcdir}/SAASound
 libscplayer_la_SOURCES = SCPlayer.cpp SCPlayer.h etracker_bin.h \
-	SAASound.h Z80.c Z80.h Z80Codes.h Z80DAA.h Z80IO.h SAAAmp.cpp \
-	SAAAmp.h SAAEnv.cpp SAAEnv.h SAAFreq.cpp SAAFreq.dat SAAFreq.h \
-	SAAImpl.cpp SAAImpl.h SAANoise.cpp SAANoise.h SAASndC.cpp \
-	SAASound.cpp types.h
+	SAASound.h Z80/Codes.h Z80/CodesCB.h Z80/CodesED.h \
+	Z80/CodesXCB.h Z80/CodesXX.h Z80/ConDebug.c Z80/Debug.c \
+	Z80/Tables.h Z80/Z80.c Z80/Z80.h SAASound/SAAAmp.cpp \
+	SAASound/SAAAmp.h SAASound/SAAEnv.cpp SAASound/SAAEnv.h \
+	SAASound/SAAFreq.cpp SAASound/SAAFreq.dat SAASound/SAAFreq.h \
+	SAASound/SAAImpl.cpp SAASound/SAAImpl.h SAASound/SAANoise.cpp \
+	SAASound/SAANoise.h SAASound/SAASndC.cpp SAASound/SAASound.cpp \
+	SAASound/SAASound.h SAASound/types.h
 all: all-am
 
 .SUFFIXES:
@@ -254,7 +268,7 @@ clean-noinstLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libscplayer.la: $(libscplayer_la_OBJECTS) $(libscplayer_la_DEPENDENCIES) 
-	$(CXXLINK)  $(libscplayer_la_OBJECTS) $(libscplayer_la_LIBADD) $(LIBS)
+	$(libscplayer_la_LINK)  $(libscplayer_la_OBJECTS) $(libscplayer_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -262,15 +276,17 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SAAAmp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SAAEnv.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SAAFreq.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SAAImpl.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SAANoise.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SAASndC.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SAASound.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SCPlayer.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Z80.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscplayer_la-ConDebug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscplayer_la-Debug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscplayer_la-SAAAmp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscplayer_la-SAAEnv.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscplayer_la-SAAFreq.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscplayer_la-SAAImpl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscplayer_la-SAANoise.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscplayer_la-SAASndC.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscplayer_la-SAASound.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscplayer_la-SCPlayer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscplayer_la-Z80.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -293,6 +309,27 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
+libscplayer_la-ConDebug.lo: Z80/ConDebug.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CFLAGS) $(CFLAGS) -MT libscplayer_la-ConDebug.lo -MD -MP -MF $(DEPDIR)/libscplayer_la-ConDebug.Tpo -c -o libscplayer_la-ConDebug.lo `test -f 'Z80/ConDebug.c' || echo '$(srcdir)/'`Z80/ConDebug.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libscplayer_la-ConDebug.Tpo $(DEPDIR)/libscplayer_la-ConDebug.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='Z80/ConDebug.c' object='libscplayer_la-ConDebug.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CFLAGS) $(CFLAGS) -c -o libscplayer_la-ConDebug.lo `test -f 'Z80/ConDebug.c' || echo '$(srcdir)/'`Z80/ConDebug.c
+
+libscplayer_la-Debug.lo: Z80/Debug.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CFLAGS) $(CFLAGS) -MT libscplayer_la-Debug.lo -MD -MP -MF $(DEPDIR)/libscplayer_la-Debug.Tpo -c -o libscplayer_la-Debug.lo `test -f 'Z80/Debug.c' || echo '$(srcdir)/'`Z80/Debug.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libscplayer_la-Debug.Tpo $(DEPDIR)/libscplayer_la-Debug.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='Z80/Debug.c' object='libscplayer_la-Debug.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CFLAGS) $(CFLAGS) -c -o libscplayer_la-Debug.lo `test -f 'Z80/Debug.c' || echo '$(srcdir)/'`Z80/Debug.c
+
+libscplayer_la-Z80.lo: Z80/Z80.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CFLAGS) $(CFLAGS) -MT libscplayer_la-Z80.lo -MD -MP -MF $(DEPDIR)/libscplayer_la-Z80.Tpo -c -o libscplayer_la-Z80.lo `test -f 'Z80/Z80.c' || echo '$(srcdir)/'`Z80/Z80.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libscplayer_la-Z80.Tpo $(DEPDIR)/libscplayer_la-Z80.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='Z80/Z80.c' object='libscplayer_la-Z80.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CFLAGS) $(CFLAGS) -c -o libscplayer_la-Z80.lo `test -f 'Z80/Z80.c' || echo '$(srcdir)/'`Z80/Z80.c
+
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
@@ -313,6 +350,62 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
+
+libscplayer_la-SCPlayer.lo: SCPlayer.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -MT libscplayer_la-SCPlayer.lo -MD -MP -MF $(DEPDIR)/libscplayer_la-SCPlayer.Tpo -c -o libscplayer_la-SCPlayer.lo `test -f 'SCPlayer.cpp' || echo '$(srcdir)/'`SCPlayer.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libscplayer_la-SCPlayer.Tpo $(DEPDIR)/libscplayer_la-SCPlayer.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SCPlayer.cpp' object='libscplayer_la-SCPlayer.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -c -o libscplayer_la-SCPlayer.lo `test -f 'SCPlayer.cpp' || echo '$(srcdir)/'`SCPlayer.cpp
+
+libscplayer_la-SAAAmp.lo: SAASound/SAAAmp.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -MT libscplayer_la-SAAAmp.lo -MD -MP -MF $(DEPDIR)/libscplayer_la-SAAAmp.Tpo -c -o libscplayer_la-SAAAmp.lo `test -f 'SAASound/SAAAmp.cpp' || echo '$(srcdir)/'`SAASound/SAAAmp.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libscplayer_la-SAAAmp.Tpo $(DEPDIR)/libscplayer_la-SAAAmp.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SAASound/SAAAmp.cpp' object='libscplayer_la-SAAAmp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -c -o libscplayer_la-SAAAmp.lo `test -f 'SAASound/SAAAmp.cpp' || echo '$(srcdir)/'`SAASound/SAAAmp.cpp
+
+libscplayer_la-SAAEnv.lo: SAASound/SAAEnv.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -MT libscplayer_la-SAAEnv.lo -MD -MP -MF $(DEPDIR)/libscplayer_la-SAAEnv.Tpo -c -o libscplayer_la-SAAEnv.lo `test -f 'SAASound/SAAEnv.cpp' || echo '$(srcdir)/'`SAASound/SAAEnv.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libscplayer_la-SAAEnv.Tpo $(DEPDIR)/libscplayer_la-SAAEnv.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SAASound/SAAEnv.cpp' object='libscplayer_la-SAAEnv.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -c -o libscplayer_la-SAAEnv.lo `test -f 'SAASound/SAAEnv.cpp' || echo '$(srcdir)/'`SAASound/SAAEnv.cpp
+
+libscplayer_la-SAAFreq.lo: SAASound/SAAFreq.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -MT libscplayer_la-SAAFreq.lo -MD -MP -MF $(DEPDIR)/libscplayer_la-SAAFreq.Tpo -c -o libscplayer_la-SAAFreq.lo `test -f 'SAASound/SAAFreq.cpp' || echo '$(srcdir)/'`SAASound/SAAFreq.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libscplayer_la-SAAFreq.Tpo $(DEPDIR)/libscplayer_la-SAAFreq.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SAASound/SAAFreq.cpp' object='libscplayer_la-SAAFreq.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -c -o libscplayer_la-SAAFreq.lo `test -f 'SAASound/SAAFreq.cpp' || echo '$(srcdir)/'`SAASound/SAAFreq.cpp
+
+libscplayer_la-SAAImpl.lo: SAASound/SAAImpl.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -MT libscplayer_la-SAAImpl.lo -MD -MP -MF $(DEPDIR)/libscplayer_la-SAAImpl.Tpo -c -o libscplayer_la-SAAImpl.lo `test -f 'SAASound/SAAImpl.cpp' || echo '$(srcdir)/'`SAASound/SAAImpl.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libscplayer_la-SAAImpl.Tpo $(DEPDIR)/libscplayer_la-SAAImpl.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SAASound/SAAImpl.cpp' object='libscplayer_la-SAAImpl.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -c -o libscplayer_la-SAAImpl.lo `test -f 'SAASound/SAAImpl.cpp' || echo '$(srcdir)/'`SAASound/SAAImpl.cpp
+
+libscplayer_la-SAANoise.lo: SAASound/SAANoise.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -MT libscplayer_la-SAANoise.lo -MD -MP -MF $(DEPDIR)/libscplayer_la-SAANoise.Tpo -c -o libscplayer_la-SAANoise.lo `test -f 'SAASound/SAANoise.cpp' || echo '$(srcdir)/'`SAASound/SAANoise.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libscplayer_la-SAANoise.Tpo $(DEPDIR)/libscplayer_la-SAANoise.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SAASound/SAANoise.cpp' object='libscplayer_la-SAANoise.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -c -o libscplayer_la-SAANoise.lo `test -f 'SAASound/SAANoise.cpp' || echo '$(srcdir)/'`SAASound/SAANoise.cpp
+
+libscplayer_la-SAASndC.lo: SAASound/SAASndC.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -MT libscplayer_la-SAASndC.lo -MD -MP -MF $(DEPDIR)/libscplayer_la-SAASndC.Tpo -c -o libscplayer_la-SAASndC.lo `test -f 'SAASound/SAASndC.cpp' || echo '$(srcdir)/'`SAASound/SAASndC.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libscplayer_la-SAASndC.Tpo $(DEPDIR)/libscplayer_la-SAASndC.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SAASound/SAASndC.cpp' object='libscplayer_la-SAASndC.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -c -o libscplayer_la-SAASndC.lo `test -f 'SAASound/SAASndC.cpp' || echo '$(srcdir)/'`SAASound/SAASndC.cpp
+
+libscplayer_la-SAASound.lo: SAASound/SAASound.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -MT libscplayer_la-SAASound.lo -MD -MP -MF $(DEPDIR)/libscplayer_la-SAASound.Tpo -c -o libscplayer_la-SAASound.lo `test -f 'SAASound/SAASound.cpp' || echo '$(srcdir)/'`SAASound/SAASound.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libscplayer_la-SAASound.Tpo $(DEPDIR)/libscplayer_la-SAASound.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SAASound/SAASound.cpp' object='libscplayer_la-SAASound.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscplayer_la_CXXFLAGS) $(CXXFLAGS) -c -o libscplayer_la-SAASound.lo `test -f 'SAASound/SAASound.cpp' || echo '$(srcdir)/'`SAASound/SAASound.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo
