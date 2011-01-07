@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
 
   if(sdlInit(&player) != 0) {
     std::cerr << "Failed to initialise audio:" << SDL_GetError() << std::endl;
+    SDL_Quit();
     exit(1);
   }
 
@@ -66,5 +67,7 @@ int main(int argc, char *argv[])
   std::cout << "Hit the return key to exit." << std::endl;
   SDL_PauseAudio(0);
   getchar();
+  SDL_PauseAudio(1);
+  SDL_Quit();
   return 0;
 }
