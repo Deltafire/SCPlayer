@@ -1,1 +1,4 @@
-SUBDIRS = scplayerlib scplay
+SUBDIRS = scplayerlib
+if SDL
+SUBDIRS += scplay
+endif
