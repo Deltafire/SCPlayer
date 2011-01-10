@@ -1,8 +1,24 @@
-/* sc_play
- * Player for Sam Coupé music files
- *
- * Christopher O'Neill 30/12/2010
- */
+/***
+Copyright (C) 2011 by Christopher O'Neill
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+***/
 
 #include <iostream>
 #include <SDL.h>
@@ -30,7 +46,6 @@ int sdlInit(SCPlayer *player)
   wanted.samples = mixerFreq / 50;   // 50hz ticks
   wanted.callback = &mixerCallback;
   wanted.userdata = reinterpret_cast <void*> (player);
-  player->init(mixerFreq);
 
   return SDL_OpenAudio(&wanted, NULL);
   // Note: SDL docs say that the above call is *guaranteed* to open the audio
@@ -38,8 +53,7 @@ int sdlInit(SCPlayer *player)
   // found that OSX gave me a buffer size of 'samples' samples (where 1 sample
   // is 4 bytes, 16 bits X 2).  Ubuntu give me half that amount (I assume they
   // considered the left & right channel to be 2 samples), and on Windows I was
-  // given some random large value, which is going to make syncronisation with
-  // the GUI akward.
+  // given some random large value.
 }
 
 
@@ -63,6 +77,7 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
+  player.init(mixerFreq);
   std::cout << "Playing: " << argv[1] << std::endl;
   std::cout << "Hit the return key to exit." << std::endl;
   SDL_PauseAudio(0);

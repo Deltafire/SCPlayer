@@ -1,0 +1,37 @@
+NOTE
+ Commercial use of this library is prohibited due to the copyright
+ restrictions of the Z80 emulation code used.
+
+
+SAASound:
+ Please refer to 'src/scplayerlib/SAASound/LICENCE'.
+
+
+Z80 emulator:
+ Please refer to the files in the 'src/scplayerlib/Z80/' directory.
+ Copyright (C) Marat Fayzullin 1994-2007
+     You are not allowed to distribute this software
+     commercially. Please, notify me, if you make any
+     changes to this file.
+
+
+SCPlayerlib:
+ Copyright (C) 2011 by Christopher O'Neill
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.

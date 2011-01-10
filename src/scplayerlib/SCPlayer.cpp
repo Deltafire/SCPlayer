@@ -1,3 +1,25 @@
+/***
+Copyright (C) 2011 by Christopher O'Neill
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+***/
+
 #include "SCPlayer.h"
 #include <string.h>
 #include <stdio.h>
@@ -21,7 +43,7 @@ const int Z80Cycles = 6000000/50; // Max cycles to allow z80 code to execute per
 // Implementation class
 class SCPlayer::SCPlayer_impl
 {
-  byte _ram[0x8000];
+  byte _ram[0x8000]; // 32k
   bool _eTracker;
   int _period;
   LPCSAASOUND _saa;
@@ -35,7 +57,6 @@ class SCPlayer::SCPlayer_impl
   byte getRam(word addr);
   void saaWriteAddress(byte val);
   void saaWriteData(byte val);
-
 };
 // Wrapper class functions (Cheshire Cat)
 bool SCPlayer::load(const char* filename)
@@ -46,7 +67,7 @@ void SCPlayer::generate(unsigned char *buffer, const int length)
   { _impl->generate(buffer, length); }
 
 
-// Functions called by Z80 emulator (callbacks)
+// Global functions called by Z80 emulator (callbacks)
 
 // We use the patch instruction to stop the emulator
 void PatchZ80 (Z80 *regs)
@@ -85,9 +106,11 @@ void Z80_Out (void *userdata, word port, byte val)
 //  debug_print(std::hex << "OUT" << " [" << port << "] = " << (int)val);
 }
 
-// Globals used by the Z80 emu
+// Global variables used by the Z80 emu
 int Z80_IRQ;    
 
+
+// Class implementation follows
 
 SCPlayer::SCPlayer() : _impl(new SCPlayer_impl())
 {
