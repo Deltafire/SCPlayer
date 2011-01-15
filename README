@@ -3,31 +3,31 @@ SAM Coupé song replayer library
 
 Background:
 
- The SAM Coupé is an 8-bit British home computer that was first released
- in late 1989. It is commonly considered a clone of the Sinclair ZX
- Spectrum computer, since it features a compatible screen mode and
- emulated compatibility, and it was marketed as a logical upgrade from
- the Spectrum.  Six channel, 8 octave stereo sound is provided by a
- Philips SAA 1099 chip.
+ The SAM Coupé is an 8-bit British home computer that was first released in
+ late 1989. It is commonly considered a clone of the Sinclair ZX Spectrum
+ computer, since it features a compatible screen mode and emulated
+ compatibility, and it was marketed as a logical upgrade from the Spectrum.
+ Six channel, 8 octave stereo sound is provided by a Philips SAA 1099 chip.
 
 
 Purpose:
 
- The purpose of this library is to replay SAM Coupé song files.  This is
- achieved by the use of a Z80 CPU emulator coupled to a SAA1099 audio
- chip emulator, with some RAM thrown in.  The Z80 replayer routine is
- either included with the song files, or the E-Tracker replayer is used
- (this is stored in the library itself).
+ The purpose of this library is to replay SAM Coupé song files (these
+ generally have the extension .sng or .cop).  This is achieved by the use of
+ a Z80 CPU emulator coupled to a SAA1099 audio chip emulator, with some RAM
+ thrown in.  The Z80 replayer routine is either included with the song
+ files, or the E-Tracker replayer is used (this is stored in the library
+ itself).
 
  It is intended that this library is used to develop input plugins for
- multi-format media players.  However, a simple SDL test player (scplay)
- is included for reference and to test playback.
+ multi-format media players.  However, a simple SDL test player (scplay) is
+ included for reference and to test playback.
 
 
 Installation:
 
- Please refer to INSTALL.  The command line player 'scplay' is built only if
- SDL is detected.
+ Please refer to INSTALL.  The command line player 'scplay' is built only
+ if SDL is detected.
 
 
 Usage:
@@ -37,8 +37,8 @@ Usage:
    scplay <filename>
 
  For use of the replayer library in your own projects, you will need the
- header file "SCPlayer.h" and the libscplayer library.  If you have
- installed the package these should be available in PREFIX/include and
+ header file "SCPlayer.h" and the libscplayer library file itself.  If you
+ have installed the package, these should be available in PREFIX/include and
  PREFIX/lib.  Please refer to the source code scplay.cpp for an example
  usage of this library.
 
@@ -70,4 +70,4 @@ E-Tracker replayer (Z80 binary):
  This package/library:
    Christopher O'Neill <code@chrisoneill.co.uk>
 
- Thanks to Spot/UP for the idea, motivation and beta testing.
+ Thanks to Spot / Up Rough for the idea, motivation and beta testing.

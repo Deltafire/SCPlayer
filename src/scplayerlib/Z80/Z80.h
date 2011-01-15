@@ -10,6 +10,12 @@
 /**     commercially. Please, notify me, if you make any    **/   
 /**     changes to this file.                               **/
 /*************************************************************/
+
+/** Christopher O'Neill - January 2011
+ * Alterations to use compiler define to detect endian
+ * Callbacks now pass a void* for user data
+ */
+
 #ifndef Z80_H
 #define Z80_H
 
@@ -20,7 +26,7 @@ extern "C" {
                                /* Compilation options:       */
 /* #define DEBUG */            /* Compile debugging version  */
 /* #define LSB_FIRST */        /* Compile for low-endian CPU */
-#ifdef __LITTLE_ENDIAN__
+#ifdef __LITTLE_ENDIAN__       /* Use compiler define        */
 #define LSB_FIRST
 #endif
                                /* LoopZ80() may return:      */

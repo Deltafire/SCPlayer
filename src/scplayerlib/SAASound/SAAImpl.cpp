@@ -9,6 +9,9 @@
 // Version 3.1.3 (8th March 2004)
 // (c) 1998-2004 dave @ spc       <dave@rebuzz.org>
 //
+// 6th January 2011 - Fixed endian bugs in generate_many
+//  - Christopher O'Neill (for scplayer library)
+//
 //////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>	// for sprintf
