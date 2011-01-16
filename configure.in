@@ -31,6 +31,7 @@ AC_CHECK_FUNCS([regcomp])
 AC_CHECK_FUNCS([strchr])
 AC_CHECK_FUNCS([strdup])
 AC_CHECK_FUNCS([strstr])
+AC_CHECK_FUNCS([strtol])
 
 AC_CONFIG_FILES([Makefile src/Makefile src/scplayerlib/Makefile src/scplay/Makefile])
 AC_OUTPUT
