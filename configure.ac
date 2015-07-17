@@ -3,11 +3,12 @@
 
 AC_PREREQ([2.68])
 AC_INIT([SCPlayer],[1.0],[code@chrisoneill.co.uk])
-AC_CONFIG_HEADERS([config.h]) 
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
 
 # Checks for programs.
+AM_PROG_AR
 AC_PROG_CXX
 AC_PROG_CC
 LT_INIT
