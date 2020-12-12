@@ -15,7 +15,7 @@ LT_INIT
 AC_SUBST([LIBTOOL_DEPS])
 
 # Checks for libraries.
-AM_PATH_SDL
+AM_PATH_SDL2
 AM_CONDITIONAL([SDL], [test -n "$SDL_CFLAGS"])
 
 # Checks for header files.

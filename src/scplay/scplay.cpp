@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 #include "SCPlayer.h"
 
-const int mixerFreq = 44100;
+int mixerFreq = 44100;
 
 void mixerCallback(void *userdata, Uint8 *stream8, int length)
 {
@@ -37,30 +37,33 @@ void mixerCallback(void *userdata, Uint8 *stream8, int length)
 }
 
 
-int sdlInit(SCPlayer *player)
+SDL_AudioDeviceID initSdlAudio(SCPlayer *player)
 {
   SDL_Init(SDL_INIT_AUDIO);
-  SDL_AudioSpec wanted;
+  SDL_AudioSpec wanted, obtained;
+  SDL_AudioDeviceID dev;
+  SDL_zero(wanted);
   wanted.freq = mixerFreq;
   wanted.format = AUDIO_S16;
   wanted.channels = 2;
-  wanted.samples = mixerFreq / 50;   // 50hz ticks
+  wanted.samples = 1024;
   wanted.callback = &mixerCallback;
   wanted.userdata = reinterpret_cast <void*> (player);
 
-  return SDL_OpenAudio(&wanted, NULL);
-  // Note: SDL docs say that the above call is *guaranteed* to open the audio
-  // driver with the specified specs; this is a blatent lie!  During testing I
-  // found that OSX gave me a buffer size of 'samples' samples (where 1 sample
-  // is 4 bytes, 16 bits X 2).  Ubuntu give me half that amount (I assume they
-  // considered the left & right channel to be 2 samples), and on Windows I was
-  // given some random large value.
+  dev = SDL_OpenAudioDevice(NULL, 0, &wanted, &obtained,
+                            SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
+  if(dev > 0)
+      mixerFreq = obtained.freq;
+  std::cout << "mixerFreq = " << mixerFreq << std::endl;
+  return dev;
 }
 
 
 int main(int argc, char *argv[])
 {
   SCPlayer player;
+  SDL_AudioDeviceID audioDevice;
+
 
   if (argc < 2) {
     std::cerr << "Usage: scplay <filename>" << std::endl;
@@ -72,7 +75,8 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  if(sdlInit(&player) != 0) {
+  audioDevice = initSdlAudio(&player);
+  if(audioDevice == 0) {
     std::cerr << "Failed to initialise audio:" << SDL_GetError() << std::endl;
     SDL_Quit();
     exit(1);
@@ -81,9 +85,9 @@ int main(int argc, char *argv[])
   player.init(mixerFreq);
   std::cout << "Playing: " << argv[1] << std::endl;
   std::cout << "Hit the return key to exit." << std::endl;
-  SDL_PauseAudio(0);
+  SDL_PauseAudioDevice(audioDevice, 0);
   getchar();
-  SDL_PauseAudio(1);
+  SDL_PauseAudioDevice(audioDevice, 1);
   SDL_Quit();
   return 0;
 }
