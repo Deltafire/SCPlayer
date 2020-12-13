@@ -169,7 +169,7 @@ bool SCPlayer::SCPlayer_impl::init(const int mixerFreq)
   _saa = CreateCSAASound();
   _saa->SetSoundParameters(SAAP_NOFILTER | SAAP_44100 | SAAP_16BIT | SAAP_STEREO);
   if (mixerFreq != 44100)
-    _saa->SendCommand(SAACMD_SetSampleRate, mixerFreq);
+      _saa->SetSampleRate(mixerFreq);
   _period = mixerFreq / 50;
 
   // Initialise CPU
