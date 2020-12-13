@@ -60,9 +60,9 @@ class SCPlayer::SCPlayer_impl
 };
 // Wrapper class functions (Cheshire Cat)
 bool SCPlayer::load(const char* filename)
-  { _impl->load(filename); }
+  { return _impl->load(filename); }
 bool SCPlayer::init(const int mixerFreq)
-  { _impl->init (mixerFreq); }
+  { return _impl->init (mixerFreq); }
 void SCPlayer::generate(unsigned char *buffer, const int length)
   { _impl->generate(buffer, length); }
 
