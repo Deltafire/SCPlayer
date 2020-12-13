@@ -1,0 +1,3 @@
+[submodule "SAASound"]
+	path = extern/SAASound
+	url = https://github.com/stripwax/SAASound.git
