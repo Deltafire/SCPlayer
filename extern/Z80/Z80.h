@@ -25,10 +25,9 @@ extern "C" {
 
                                /* Compilation options:       */
 /* #define DEBUG */            /* Compile debugging version  */
+/* Following option is set by cmake */
 /* #define LSB_FIRST */        /* Compile for low-endian CPU */
-#ifdef __LITTLE_ENDIAN__       /* Use compiler define        */
-#define LSB_FIRST
-#endif
+
                                /* LoopZ80() may return:      */
 #define INT_RST00   0x00C7     /* RST 00h                    */
 #define INT_RST08   0x00CF     /* RST 08h                    */

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.13.4)
 
 project (scplayer)
 
@@ -53,4 +53,11 @@ if(NOT hasParent)
     target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
     add_subdirectory(scplay)
   endif()
+endif()
+
+# Detect system endianess (needed for Z80.h)
+include (TestBigEndian)
+TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
+if(NOT IS_BIG_ENDIAN)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC LSB_FIRST)
 endif()
