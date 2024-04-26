@@ -20,8 +20,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ***/
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <iostream>
+#include <signal.h>
 #include <SDL.h>
 
 #include "SCPlayer.h"
@@ -53,26 +56,52 @@ SDL_AudioDeviceID initSdlAudio(SCPlayer *player)
   dev = SDL_OpenAudioDevice(NULL, 0, &wanted, &obtained,
                             SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
   if(dev > 0)
-      mixerFreq = obtained.freq;
+    mixerFreq = obtained.freq;
   std::cout << "mixerFreq = " << mixerFreq << std::endl;
   return dev;
 }
 
+void usage(char *a0) {
+  std::cerr << "Usage: " << a0 << " [-d duration] [-n] <filename>" << std::endl;
+  std::cerr << "  -d  Stop playback after 'duration' seconds" << std::endl;
+  std::cerr << "  -n  No looping (eTracker only)" << std::endl;
+  exit(EXIT_FAILURE);
+}
+
+void signalHandler(int s)
+{
+  exit(0);
+}
 
 int main(int argc, char *argv[])
 {
   SCPlayer player;
   SDL_AudioDeviceID audioDevice;
 
-
-  if (argc < 2) {
-    std::cerr << "Usage: scplay <filename>" << std::endl;
-    exit(1);
+  int opt, duration;
+  bool noLoop = false;
+  char *filename;
+  while ((opt = getopt(argc, argv, "nd:")) != -1) {
+    switch (opt) {
+    case 'n':
+      noLoop = true;
+      break;
+    case 'd':
+      duration = atoi(optarg);
+      break;
+    default:
+      usage(argv[0]);
+    }
+  }
+  if (optind >= argc) {
+    usage(argv[0]);
   }
 
-  if (!player.load(argv[1])) {
-    std::cerr << "Cannot open file " << argv[1] << std::endl;
-    exit(1);
+  filename = argv[optind];
+
+  if (!player.load(filename)) {
+    std::cerr << "Cannot open file " << filename << std::endl;
+    exit(EXIT_FAILURE);
   }
 
   audioDevice = initSdlAudio(&player);
@@ -81,12 +110,19 @@ int main(int argc, char *argv[])
     SDL_Quit();
     exit(1);
   }
-
   player.init(mixerFreq);
-  std::cout << "Playing: " << argv[1] << std::endl;
-  std::cout << "Hit the return key to exit." << std::endl;
+  duration *= mixerFreq; // seconds -> samples
+  std::cout << "Playing: " << filename << std::endl;
+  std::cout << "CTRL-C to exit." << std::endl;
   SDL_PauseAudioDevice(audioDevice, 0);
-  getchar();
+  signal(SIGINT, signalHandler);
+  while(true) {
+    sleep(1);
+    if (noLoop && player.hasLooped())
+      break;
+    if (duration && player.getSamplesPlayed() >= duration)
+      break;
+  }
   SDL_PauseAudioDevice(audioDevice, 1);
   SDL_Quit();
   return 0;

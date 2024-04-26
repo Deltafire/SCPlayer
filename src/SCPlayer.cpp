@@ -49,7 +49,9 @@ class SCPlayer::SCPlayer_impl
   LPCSAASOUND _saa;
   Z80 _z80;
  public:
-  SCPlayer_impl() {}
+  bool _hasLooped, _stopOnLoop;
+  unsigned int _samplesPlayed;
+  SCPlayer_impl(): _hasLooped(false), _stopOnLoop(false), _samplesPlayed(0) {};
   bool load(const char* filename);
   bool init(const int mixerFreq);
   void generate(unsigned char *buffer, const int length);
@@ -65,14 +67,26 @@ bool SCPlayer::init(const int mixerFreq)
   { return _impl->init (mixerFreq); }
 void SCPlayer::generate(unsigned char *buffer, const int length)
   { _impl->generate(buffer, length); }
+bool SCPlayer::hasLooped()
+  { return _impl->_hasLooped; }
+void SCPlayer::stopOnLoop(bool setting)
+  { _impl->_stopOnLoop = setting; }
+unsigned int SCPlayer::getSamplesPlayed()
+  { return _impl->_samplesPlayed; }
 
 
 // Global functions called by Z80 emulator (callbacks)
 
 // We use the patch instruction to stop the emulator
-void PatchZ80 (Z80 *regs)
+void PatchZ80 (void *userdata, Z80 *regs)
 {
-  regs->PC.W = stub; // Reset PC
+  if(regs->PC.W != 0x7005) {
+    SCPlayer::SCPlayer_impl *scp = reinterpret_cast<SCPlayer::SCPlayer_impl *> (userdata);
+    scp->_hasLooped = true;
+    regs->PC.W = 0x8464;
+  } else {
+    regs->PC.W = stub; // Reset PC
+  }
   regs->ICount = 0;
 }
 int Z80_Interrupt() { return 0; }
@@ -107,7 +121,7 @@ void Z80_Out (void *userdata, word port, byte val)
 }
 
 // Global variables used by the Z80 emu
-int Z80_IRQ;    
+int Z80_IRQ;
 
 
 // Class implementation follows
@@ -151,11 +165,13 @@ bool SCPlayer::SCPlayer_impl::load(const char* filename)
   }
   else if (!strncmp((char *)&_ram[0x0000], "\x43\x72\x3d\xc2\x23\x81", 6))
   {
+    debug_print("Patch #2");
     _ram[0x0001] = 1;
   }
   else if (!strncmp((char*)&_ram[0x0000], "\x21\xb3\x84\xc3\xef\x83", 6))
   {
     // eTracker compiled song
+    debug_print("eTracker compiled song");
     _eTracker = true;
   }
   return true;
@@ -169,7 +185,7 @@ bool SCPlayer::SCPlayer_impl::init(const int mixerFreq)
   _saa = CreateCSAASound();
   _saa->SetSoundParameters(SAAP_NOFILTER | SAAP_44100 | SAAP_16BIT | SAAP_STEREO);
   if (mixerFreq != 44100)
-      _saa->SetSampleRate(mixerFreq);
+    _saa->SetSampleRate(mixerFreq);
   _period = mixerFreq / 50;
 
   // Initialise CPU
@@ -185,6 +201,7 @@ bool SCPlayer::SCPlayer_impl::init(const int mixerFreq)
     debug_print("Initialising eTracker player.");
     ExecZ80(&_z80, Z80Cycles);
     _ram[stub+1] = 6;
+    _ram[0x04a7] = 0xed; _ram[0x4a8] = 0xfe; // Patch get_loop
   }
 
   debug_print(std::hex);
@@ -197,6 +214,7 @@ void SCPlayer::SCPlayer_impl::generate(unsigned char *buffer, const int length)
 {
   // 'length' could be anything, ensure the Z80 code is called at 50Hz
   int samplesToPlay = length / 4; // 16-bit stereo
+  _samplesPlayed += samplesToPlay;
   static int remainder = 0;
 
   while (remainder && samplesToPlay)

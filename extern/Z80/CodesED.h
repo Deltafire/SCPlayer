@@ -12,7 +12,7 @@
 /*************************************************************/
 
 /** This is a special patch for emulating BIOS calls: ********/
-case DB_FE:     PatchZ80(R);break;
+case DB_FE:     PatchZ80(R->User, R);break;
 /*************************************************************/
 
 case ADC_HL_BC: M_ADCW(BC);break;

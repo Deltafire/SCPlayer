@@ -43,10 +43,13 @@ Usage:
 
    scplay <filename>
 
+ The -n argument can be used to disable looping when playing eTracker songs,
+ -d <duration> will stop playback after 'duration' seconds.
+
  For use of the replayer library in your own projects, you will need the
- header file "SCPlayer.h" and the libscplayer library file itself.  If you
- have installed the package, these should be available in PREFIX/include and
- PREFIX/lib.  Please refer to the source code scplay.cpp for an example
+ header file "SCPlayer.h" and the libscplayer library file. If you have
+ installed the package, these should be available in PREFIX/include and
+ PREFIX/lib. Please refer to the source code of scplay.cpp for an example
  usage of this library.
 
    1. Include "SCPlayer.h"

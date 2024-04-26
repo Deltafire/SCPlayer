@@ -32,6 +32,9 @@ class SCPlayer
   bool load(const char* filename);
   bool init(const int mixerFreq);
   void generate(unsigned char *buffer, const int length);
+  bool hasLooped();
+  void stopOnLoop(bool setting);
+  unsigned int getSamplesPlayed();
 
   class SCPlayer_impl;
  private:
