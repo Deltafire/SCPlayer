@@ -26,8 +26,15 @@ Purpose:
 
 Installation:
 
- Please refer to INSTALL.  The command line player 'scplay' is built only
- if SDL is detected.
+ This project uses the cmake build system. Typical build steps are as follows:
+
+   $ mkdir build
+   $ cd build
+   $ cmake ..
+   $ make
+   $ make install (optional)
+
+The command line player 'scplay' is built only if SDL is detected.
 
 
 Usage:

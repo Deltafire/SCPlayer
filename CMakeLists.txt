@@ -39,6 +39,8 @@ if (SAASOUND_LIBRARY AND SAASOUND_INCLUDE_DIR)
   message(STATUS "Found SAASound: ${SAASOUND_LIBRARY}")
 else()
   message(STATUS "Building SAASound")
+  # Don't build a Framework library on MacOS
+  set(BUILD_FRAMEWORK OFF CACHE INTERNAL "" FORCE)
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/${SAASOUND_DIR})
   target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${SAASOUND_DIR}/include)
   target_link_libraries(${PROJECT_NAME} SAASound)
@@ -61,3 +63,10 @@ TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
 if(NOT IS_BIG_ENDIAN)
   target_compile_definitions(${PROJECT_NAME} PUBLIC LSB_FIRST)
 endif()
+
+install(TARGETS scplayer
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  PUBLIC_HEADER DESTINATION include)
+
+install(TARGETS scplay RUNTIME DESTINATION bin)
