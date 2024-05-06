@@ -39,12 +39,15 @@ The command line player 'scplay' is built only if SDL is detected.
 
 Usage:
 
- For the command-line player (if installed and in the path), simply:
+ For the command-line player (if installed and in the path):
 
    scplay <filename>
 
- The -n argument can be used to disable looping when playing eTracker songs,
- -d <duration> will stop playback after 'duration' seconds.
+ The following command line arguments are accepted:
+
+   -d <duration> stop playback after 'duration' seconds
+   -n            disable looping when playing eTracker songs
+   -o            write audio to stdout, raw S16 stereo
 
  For use of the replayer library in your own projects, you will need the
  header file "SCPlayer.h" and the libscplayer library file. If you have

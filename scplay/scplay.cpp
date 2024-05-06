@@ -65,6 +65,7 @@ void usage(char *a0) {
   std::cerr << "Usage: " << a0 << " [-d duration] [-n] <filename>" << std::endl;
   std::cerr << "  -d  Stop playback after 'duration' seconds" << std::endl;
   std::cerr << "  -n  No looping (eTracker only)" << std::endl;
+  std::cerr << "  -o  Output raw S16 stereo audio to stdout" << std::endl;
   exit(EXIT_FAILURE);
 }
 
@@ -80,14 +81,18 @@ int main(int argc, char *argv[])
 
   int opt, duration;
   bool noLoop = false;
+  bool toStdOut = false;
   char *filename;
-  while ((opt = getopt(argc, argv, "nd:")) != -1) {
+  while ((opt = getopt(argc, argv, "ond:")) != -1) {
     switch (opt) {
     case 'n':
       noLoop = true;
       break;
     case 'd':
       duration = atoi(optarg);
+      break;
+    case 'o':
+      toStdOut = true;
       break;
     default:
       usage(argv[0]);
@@ -102,6 +107,20 @@ int main(int argc, char *argv[])
   if (!player.load(filename)) {
     std::cerr << "Cannot open file " << filename << std::endl;
     exit(EXIT_FAILURE);
+  }
+
+  if(toStdOut) {
+    player.init(mixerFreq);
+    duration *= mixerFreq;
+    int tickSamples = 4*mixerFreq/50;
+    Uint8 buffer[tickSamples];
+    while(!player.hasLooped()) {
+      player.generate(buffer, tickSamples);
+      write(1, buffer, tickSamples);
+      if(duration && player.getSamplesPlayed() >= duration)
+        break;
+    }
+    exit(0);
   }
 
   audioDevice = initSdlAudio(&player);
